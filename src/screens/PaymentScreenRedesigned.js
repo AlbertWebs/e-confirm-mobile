@@ -26,11 +26,6 @@ const PaymentScreenRedesigned = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const transactionData = route.params?.transactionData || currentTransaction;
-  
-  // Debug log to see what data we're receiving
-  React.useEffect(() => {
-    console.log('PaymentScreen - transactionData:', transactionData);
-  }, [transactionData]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -164,22 +159,26 @@ const PaymentScreenRedesigned = () => {
 
         {/* Action Buttons */}
         <View style={styles.actionButtons}>
-          <BankingButton
-            title="Back"
-            variant="outline"
-            onPress={() => navigation.goBack()}
-            disabled={loading}
-            style={styles.backButton}
-            size="lg"
-          />
-          <BankingButton
-            title={loading ? 'Processing...' : 'Pay with M-Pesa'}
-            onPress={handleInitiatePayment}
-            loading={loading}
-            disabled={loading}
-            style={styles.payButtonAction}
-            size="lg"
-          />
+          <View style={styles.actionButtonWrapper}>
+            <BankingButton
+              title="Back"
+              variant="outline"
+              onPress={() => navigation.goBack()}
+              disabled={loading}
+              size="md"
+              fullWidth
+            />
+          </View>
+          <View style={styles.actionButtonWrapper}>
+            <BankingButton
+              title={loading ? 'Processing...' : 'Pay with M-Pesa'}
+              onPress={handleInitiatePayment}
+              loading={loading}
+              disabled={loading}
+              size="md"
+              fullWidth
+            />
+          </View>
         </View>
       </ScrollView>
     </Animated.View>
@@ -284,21 +283,15 @@ const styles = StyleSheet.create({
     fontSize: Typography.fontSize.sm,
     lineHeight: Typography.lineHeight.relaxed * Typography.fontSize.sm,
   },
-  payButton: {
-    marginTop: Spacing.md,
-  },
   actionButtons: {
     flexDirection: 'row',
     gap: Spacing.sm,
     marginTop: Spacing.md,
   },
-  backButton: {
+  actionButtonWrapper: {
     flex: 1,
-    minWidth: 0, // Allow flex to work properly
-  },
-  payButtonAction: {
-    flex: 1,
-    minWidth: 0, // Allow flex to work properly
+    minWidth: 0,
+    minHeight: 44,
   },
   loadingText: {
     fontSize: Typography.fontSize.base,

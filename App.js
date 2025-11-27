@@ -8,22 +8,20 @@ import { HomeIcon, PlusIcon, ListIcon, ComplaintIcon } from './src/components/Sv
 import LoadingOverlay from './src/components/LoadingOverlay';
 import { useTheme } from './src/context/ThemeContext';
 
-import HomeScreen from './src/screens/HomeScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import EscrowWizardScreen from './src/screens/EscrowWizardScreen';
 import TransactionFormScreen from './src/screens/TransactionFormScreen';
-import HistoryScreen from './src/screens/HistoryScreen';
 import HistoryScreenRedesigned from './src/screens/HistoryScreenRedesigned';
 import ComplaintScreen from './src/screens/ComplaintScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
-import PaymentScreen from './src/screens/PaymentScreen';
 import PaymentScreenRedesigned from './src/screens/PaymentScreenRedesigned';
-import PaymentStatusScreen from './src/screens/PaymentStatusScreen';
 import PaymentStatusScreenRedesigned from './src/screens/PaymentStatusScreenRedesigned';
-import TransactionDetailsScreen from './src/screens/TransactionDetailsScreen';
 import EscrowDetailScreen from './src/screens/EscrowDetailScreen';
+import PhoneVerificationScreen from './src/screens/PhoneVerificationScreen';
+import ProfileEditScreen from './src/screens/ProfileEditScreen';
 import { AppProvider } from './src/context/AppContext';
 import { ThemeProvider } from './src/context/ThemeContext';
+import { UserProvider } from './src/context/UserContext';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -83,8 +81,6 @@ const NavigationThemeWrapper = ({ children }) => {
 const MainTabs = () => {
   const [loading, setLoading] = React.useState(false);
   const theme = useTheme();
-
-  console.log('MainTabs rendering, theme:', theme.colors.background);
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.backgroundSecondary }}>
@@ -197,15 +193,14 @@ const MainTabs = () => {
 };
 
 export default function App() {
-  console.log('App component rendering...');
-  
   try {
     return (
       <SafeAreaProvider>
         <ThemeProvider>
           <ThemedAppContainer>
-            <AppProvider>
-              <NavigationThemeWrapper>
+            <UserProvider>
+              <AppProvider>
+                <NavigationThemeWrapper>
                 {Platform.OS !== 'web' && (
                   <StatusBar 
                     barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'}
@@ -252,13 +247,25 @@ export default function App() {
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen 
-                  name="TransactionDetailsOld" 
-                  component={TransactionDetailsScreen}
-                  options={{ title: 'Transaction Details' }}
+                  name="PhoneVerification" 
+                  component={PhoneVerificationScreen}
+                  options={{ 
+                    title: 'Verify Phone',
+                    headerShown: true,
+                  }}
+                />
+                <Stack.Screen 
+                  name="ProfileEdit" 
+                  component={ProfileEditScreen}
+                  options={{ 
+                    title: 'Edit Profile',
+                    headerShown: true,
+                  }}
                 />
               </Stack.Navigator>
               </NavigationThemeWrapper>
             </AppProvider>
+          </UserProvider>
           </ThemedAppContainer>
         </ThemeProvider>
       </SafeAreaProvider>

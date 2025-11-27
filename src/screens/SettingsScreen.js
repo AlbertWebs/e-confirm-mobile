@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,15 +7,19 @@ import {
   TouchableOpacity,
   Switch,
   Animated,
+  Alert,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 import { Typography, Spacing, BorderRadius, Layout } from '../theme/designSystem';
 import BankingCard from '../components/BankingCard';
+import BankingButton from '../components/BankingButton';
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
+  const { user, isGuest, phoneNumber, logout } = useUser();
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const { isDarkMode, toggleTheme } = useTheme();
   const [biometricEnabled, setBiometricEnabled] = React.useState(false);
@@ -64,25 +68,85 @@ const SettingsScreen = () => {
       >
         {/* Profile Section */}
         <BankingCard variant="elevated" style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-            Profile
-          </Text>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+              Profile
+            </Text>
+            {isGuest && (
+              <View style={[styles.guestBadge, { backgroundColor: theme.warningLight || '#fef3c7' }]}>
+                <Text style={[styles.guestBadgeText, { color: theme.warning || '#f59e0b' }]}>
+                  Guest Mode
+                </Text>
+              </View>
+            )}
+          </View>
           <SettingItem
             label="Name"
-            value="John Doe"
-            onPress={() => {}}
+            value={user?.name || 'Not set'}
+            onPress={() => navigation.navigate('ProfileEdit')}
           />
           <SettingItem
             label="Email"
-            value="john@example.com"
-            onPress={() => {}}
+            value={user?.email || 'Not set'}
+            onPress={() => navigation.navigate('ProfileEdit')}
           />
           <SettingItem
             label="Phone"
-            value="+254712345678"
-            onPress={() => {}}
+            value={phoneNumber || user?.phone || 'Not set'}
+            onPress={() => navigation.navigate('ProfileEdit')}
           />
+          {isGuest && (
+            <View style={styles.guestPrompt}>
+              <Text style={[styles.guestPromptText, { color: theme.colors.textSecondary }]}>
+                Complete your profile to access all features
+              </Text>
+              <BankingButton
+                title="Complete Profile"
+                onPress={() => navigation.navigate('ProfileEdit')}
+                fullWidth
+                size="md"
+                style={styles.completeButton}
+              />
+            </View>
+          )}
         </BankingCard>
+
+        {/* Account Section */}
+        {!isGuest && (
+          <BankingCard variant="elevated" style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+              Account
+            </Text>
+            <SettingItem
+              label="Edit Profile"
+              onPress={() => navigation.navigate('ProfileEdit')}
+            />
+            <SettingItem
+              label="Verify Phone"
+              onPress={() => navigation.navigate('PhoneVerification')}
+            />
+            <SettingItem
+              label="Logout"
+              onPress={() => {
+                Alert.alert(
+                  'Logout',
+                  'Are you sure you want to logout?',
+                  [
+                    { text: 'Cancel', style: 'cancel' },
+                    {
+                      text: 'Logout',
+                      style: 'destructive',
+                      onPress: () => {
+                        logout();
+                        Alert.alert('Logged Out', 'You have been logged out successfully');
+                      },
+                    },
+                  ]
+                );
+              }}
+            />
+          </BankingCard>
+        )}
 
         {/* Security Section */}
         <BankingCard variant="elevated" style={styles.section}>
@@ -195,10 +259,38 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: Spacing.lg,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
   sectionTitle: {
     fontSize: Typography.fontSize.lg,
     fontWeight: Typography.fontWeight.bold,
+  },
+  guestBadge: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    borderRadius: BorderRadius.full,
+  },
+  guestBadgeText: {
+    fontSize: Typography.fontSize.xs,
+    fontWeight: Typography.fontWeight.semibold,
+  },
+  guestPrompt: {
+    marginTop: Spacing.md,
+    paddingTop: Spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: '#e2e8f0',
+  },
+  guestPromptText: {
+    fontSize: Typography.fontSize.sm,
+    textAlign: 'center',
     marginBottom: Spacing.md,
+  },
+  completeButton: {
+    marginTop: Spacing.sm,
   },
   settingItem: {
     flexDirection: 'row',

@@ -58,6 +58,23 @@ fastlane/test_output
 # Expo (legacy)
 .expo/
 .expo-shared/
+
+# Build outputs
 web-build/
+android/app/build/
+android/app/release/
+android/.gradle/
+android/build/
+ios/build/
+ios/DerivedData/
+*.apk
+*.aab
+*.ipa
+*.xcarchive
+
+# Release keystores (keep debug.keystore)
+*.keystore
+!debug.keystore
+android/keystore.properties
 
 

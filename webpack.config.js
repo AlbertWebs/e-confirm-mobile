@@ -1,11 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
   entry: './index.web.js',
-  mode: 'development',
-  devtool: 'cheap-module-source-map',
+  mode: isProduction ? 'production' : 'development',
+  devtool: isProduction ? 'source-map' : 'cheap-module-source-map',
   ignoreWarnings: [
     /react-native-worklets/,
     /Critical dependency/,
@@ -61,6 +64,10 @@ module.exports = {
         test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot)$/i,
         type: 'asset/resource',
       },
+      {
+        test: /manifest\.json$/,
+        type: 'asset/resource',
+      },
     ],
   },
   plugins: [
@@ -68,9 +75,24 @@ module.exports = {
       template: './web/index.html',
       filename: 'index.html',
       inject: true,
+      favicon: false, // We'll handle favicon in HTML
+    }),
+    // Copy manifest, service worker, and icons
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'web/manifest.json', to: 'manifest.json' },
+        { from: 'web/service-worker.js', to: 'service-worker.js' },
+        { from: 'web/install-prompt.js', to: 'install-prompt.js' },
+        { 
+          from: 'web/icons', 
+          to: 'icons',
+          noErrorOnMissing: true, // Don't fail if icons don't exist yet
+        },
+      ],
     }),
     new webpack.DefinePlugin({
-      __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production'),
+      __DEV__: JSON.stringify(!isProduction),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
     }),
     new webpack.NormalModuleReplacementPlugin(
       /react-native-reanimated/,
@@ -103,9 +125,27 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'web-build'),
-    filename: 'bundle.js',
+    filename: isProduction ? 'bundle.[contenthash].js' : 'bundle.js',
     publicPath: '/',
     clean: true,
+  },
+  optimization: {
+    minimize: isProduction,
+    splitChunks: isProduction ? {
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    } : false,
+  },
+  performance: {
+    hints: isProduction ? 'warning' : false,
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
   },
 };
 

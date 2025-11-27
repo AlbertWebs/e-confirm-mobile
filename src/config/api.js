@@ -1,8 +1,6 @@
 // API Configuration
-// Update this with your Laravel backend URL
-export const API_BASE_URL = __DEV__ 
-  ? 'http://localhost:8000/api'  // Development
-  : 'https://econfirm.co.ke/api'; // Production
+// e-confirm API endpoint
+export const API_BASE_URL = 'https://econfirm.co.ke/api';
 
 export const API_ENDPOINTS = {
   TRANSACTION_TYPES: '/mobile/transaction-types',
@@ -12,6 +10,10 @@ export const API_ENDPOINTS = {
   GET_TRANSACTION: '/mobile/transaction',
   SEARCH_TRANSACTION: '/mobile/transaction/search',
   SUBMIT_COMPLAINT: '/mobile/complaint',
+  // User authentication endpoints
+  SEND_OTP: '/mobile/auth/send-otp',
+  VERIFY_OTP: '/mobile/auth/verify-otp',
+  UPDATE_PROFILE: '/mobile/user/update-profile',
 };
 
 export const apiRequest = async (endpoint, method = 'GET', data = null) => {
@@ -63,7 +65,7 @@ export const apiRequest = async (endpoint, method = 'GET', data = null) => {
       console.warn('Network error - API server may not be running or CORS issue');
       return { 
         success: false, 
-        message: 'Unable to connect to server. Please check if the Laravel backend is running.',
+        message: 'Unable to connect to e-confirm API. Please check your internet connection.',
         data: null 
       };
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../context/ThemeContext';
 import { Typography, BorderRadius, Spacing } from '../theme/designSystem';
@@ -22,6 +22,9 @@ const BankingButton = ({
     size === 'lg' && styles.buttonLg,
     fullWidth && styles.fullWidth,
     disabled && styles.disabled,
+    // Ensure outline variant doesn't add extra size from border
+    variant === 'outline' && styles.outlineButton,
+    // Ensure consistent sizing - apply flex from style prop
     style,
   ];
 
@@ -40,20 +43,21 @@ const BankingButton = ({
         onPress={onPress}
         disabled={disabled || loading}
         activeOpacity={0.8}
-        style={buttonStyle}
+        style={[buttonStyle, { borderWidth: 1, borderColor: 'transparent', overflow: 'hidden' }]}
       >
         <LinearGradient
           colors={[theme.primary, theme.primaryDark]}
-          style={[styles.gradient, buttonStyle]}
+          style={styles.gradient}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-        >
+        />
+        <View style={styles.buttonContent}>
           {loading ? (
             <ActivityIndicator color="#fff" size="small" />
           ) : (
             <Text style={[textStyle, { color: '#fff' }]}>{title}</Text>
           )}
-        </LinearGradient>
+        </View>
       </TouchableOpacity>
     );
   }
@@ -68,7 +72,7 @@ const BankingButton = ({
         variant === 'secondary' && { backgroundColor: theme.primarySubtle },
         variant === 'outline' && {
           backgroundColor: 'transparent',
-          borderWidth: 1.5,
+          borderWidth: 1,
           borderColor: theme.primary,
         },
         variant === 'ghost' && { backgroundColor: 'transparent' },
@@ -91,6 +95,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 44,
+    // Ensure consistent sizing regardless of border
+    boxSizing: 'border-box',
   },
   buttonSm: {
     paddingVertical: 6,
@@ -104,12 +110,15 @@ const styles = StyleSheet.create({
   },
   fullWidth: {
     width: '100%',
+    alignSelf: 'stretch',
   },
   disabled: {
     opacity: 0.5,
   },
   gradient: {
-    borderRadius: BorderRadius.md,
+    ...StyleSheet.absoluteFillObject,
+  },
+  buttonContent: {
     alignItems: 'center',
     justifyContent: 'center',
   },

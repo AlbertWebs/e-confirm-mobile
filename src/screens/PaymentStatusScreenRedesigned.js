@@ -163,46 +163,52 @@ const PaymentStatusScreenRedesigned = () => {
         {/* Action Buttons */}
         {status === 'completed' && (
           <View style={styles.actions}>
-            <BankingButton
-              title="View Transaction"
-              onPress={() => {
-                if (transactionId) {
-                  navigation.navigate('TransactionDetails', { transactionId });
-                }
-              }}
-              fullWidth
-              size="lg"
-              style={styles.actionButton}
-            />
-            <BankingButton
-              title="Download Receipt"
-              variant="outline"
-              onPress={() => {
-                // PDF receipt generation would go here
-                console.log('Generate PDF receipt');
-              }}
-              fullWidth
-              style={styles.actionButton}
-            />
+            <View style={styles.actionButtonWrapper}>
+              <BankingButton
+                title="View Transaction"
+                onPress={() => {
+                  if (transactionId) {
+                    navigation.navigate('TransactionDetails', { transactionId });
+                  }
+                }}
+                fullWidth
+                size="md"
+              />
+            </View>
+            <View style={styles.actionButtonWrapper}>
+              <BankingButton
+                title="Download Receipt"
+                variant="outline"
+                onPress={() => {
+                  // PDF receipt generation would go here
+                  console.log('Generate PDF receipt');
+                }}
+                fullWidth
+                size="md"
+              />
+            </View>
           </View>
         )}
 
         {status === 'failed' && (
           <View style={styles.actions}>
-            <BankingButton
-              title="Try Again"
-              onPress={() => navigation.goBack()}
-              fullWidth
-              size="lg"
-              style={styles.actionButton}
-            />
-            <BankingButton
-              title="Contact Support"
-              variant="outline"
-              onPress={() => navigation.navigate('Complaint')}
-              fullWidth
-              style={styles.actionButton}
-            />
+            <View style={styles.actionButtonWrapper}>
+              <BankingButton
+                title="Try Again"
+                onPress={() => navigation.goBack()}
+                fullWidth
+                size="md"
+              />
+            </View>
+            <View style={styles.actionButtonWrapper}>
+              <BankingButton
+                title="Contact Support"
+                variant="outline"
+                onPress={() => navigation.navigate('Complaint')}
+                fullWidth
+                size="md"
+              />
+            </View>
           </View>
         )}
 
@@ -268,9 +274,13 @@ const styles = StyleSheet.create({
   actions: {
     width: '100%',
     marginTop: Spacing.xl,
+    flexDirection: 'row',
+    gap: Spacing.sm,
   },
-  actionButton: {
-    marginBottom: Spacing.md,
+  actionButtonWrapper: {
+    flex: 1,
+    minWidth: 0,
+    minHeight: 44,
   },
   infoCard: {
     marginTop: Spacing.xl,

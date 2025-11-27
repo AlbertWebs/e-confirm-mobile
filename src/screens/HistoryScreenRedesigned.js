@@ -99,38 +99,35 @@ const HistoryScreenRedesigned = () => {
       </View>
 
       {/* Filters */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={[styles.filtersContainer, { backgroundColor: theme.colors.background }]}
-        contentContainerStyle={styles.filtersContent}
-      >
-        {filters.map((f) => (
-          <TouchableOpacity
-            key={f.key}
-            style={[
-              styles.filterChip,
-              {
-                backgroundColor: filter === f.key ? theme.primary : theme.colors.backgroundSecondary,
-                borderColor: filter === f.key ? theme.primary : theme.colors.border,
-              },
-            ]}
-            onPress={() => setFilter(f.key)}
-          >
-            <Text
+      <View style={[styles.filtersContainer, { backgroundColor: theme.colors.background }]}>
+        <View style={styles.filtersContent}>
+          {filters.map((f) => (
+            <TouchableOpacity
+              key={f.key}
               style={[
-                styles.filterText,
+                styles.filterChip,
                 {
-                  color: filter === f.key ? '#fff' : theme.colors.text,
-                  fontWeight: filter === f.key ? Typography.fontWeight.semibold : Typography.fontWeight.regular,
+                  backgroundColor: filter === f.key ? theme.primary : theme.colors.backgroundSecondary,
+                  borderColor: filter === f.key ? theme.primary : theme.colors.border,
                 },
               ]}
+              onPress={() => setFilter(f.key)}
             >
-              {f.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+              <Text
+                style={[
+                  styles.filterText,
+                  {
+                    color: filter === f.key ? '#fff' : theme.colors.text,
+                    fontWeight: filter === f.key ? Typography.fontWeight.semibold : Typography.fontWeight.regular,
+                  },
+                ]}
+              >
+                {f.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
 
       {/* Transactions List */}
       <ScrollView
@@ -230,21 +227,26 @@ const styles = StyleSheet.create({
   filtersContainer: {
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',
+    paddingVertical: Spacing.md,
   },
   filtersContent: {
+    flexDirection: 'row',
     paddingHorizontal: Layout.screenPadding,
-    paddingVertical: Spacing.md,
     gap: Spacing.sm,
   },
   filterChip: {
-    paddingHorizontal: Spacing.md,
+    flex: 1,
+    paddingHorizontal: Spacing.sm,
     paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.full,
+    borderRadius: BorderRadius.md,
     borderWidth: 1,
-    marginRight: Spacing.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 36,
   },
   filterText: {
     fontSize: Typography.fontSize.sm,
+    textAlign: 'center',
   },
   scrollView: {
     flex: 1,
