@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>eConfirm Escrow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        #root {
+            width: 100%;
+            min-height: 100vh;
+            display: block !important;
+            position: relative;
+            background-color: #f8fafc;
+        }
+        /* Ensure React Native Web components are visible */
+        div[class*="View"] {
+            display: flex !important;
+            position: relative;
+        }
+        /* Fix for React Navigation on web */
+        div[data-testid] {
+            display: block !important;
+        }
+        /* Ensure text is visible */
+        span, p, h1, h2, h3, h4, h5, h6 {
+            display: inline-block;
+            color: inherit;
+        }
+        /* Fix for ScrollView */
+        div[class*="ScrollView"] {
+            display: block !important;
+            overflow-y: auto;
+            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+        }
+        /* Ensure navigation container is visible */
+        div[class*="NavigationContainer"] {
+            display: block !important;
+            width: 100% !important;
+            height: 100vh !important;
+            position: relative !important;
+        }
+        /* Fix for Stack Navigator */
+        div[class*="StackView"] {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        /* Ensure all React Native components are visible */
+        * {
+            box-sizing: border-box;
+        }
+        /* Bottom Tab Navigation Styles */
+        div[class*="TabBar"] {
+            display: flex !important;
+            flex-direction: row !important;
+            background-color: #fff !important;
+            border-top: 1px solid #e5e7eb !important;
+        }
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            #root {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
+
+
