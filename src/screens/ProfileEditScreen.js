@@ -88,7 +88,7 @@ const ProfileEditScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: theme.colors.backgroundSecondary }]}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ErrorDisplay error={error} onDismiss={() => setError(null)} />

@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { HomeIcon, PlusIcon, ListIcon, ComplaintIcon } from './src/components/SvgIcons';
 import LoadingOverlay from './src/components/LoadingOverlay';
 import { useTheme } from './src/context/ThemeContext';
+import { Layout } from './src/theme/designSystem';
 
 import DashboardScreen from './src/screens/DashboardScreen';
 import EscrowWizardScreen from './src/screens/EscrowWizardScreen';
@@ -83,7 +84,7 @@ const MainTabs = () => {
   const theme = useTheme();
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.backgroundSecondary }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <Tab.Navigator
         screenOptions={{
           headerStyle: {
@@ -96,29 +97,30 @@ const MainTabs = () => {
           headerTintColor: theme.colors.text,
           headerTitleStyle: {
             fontWeight: '600',
-            fontSize: 18,
+            fontSize: Math.round(18 * Layout.mobileScale),
           },
           tabBarActiveTintColor: theme.primary,
           tabBarInactiveTintColor: theme.colors.textTertiary,
           tabBarStyle: {
             borderTopWidth: 0,
             backgroundColor: theme.colors.background,
-            paddingBottom: Platform.OS === 'ios' ? 20 : 8,
-            paddingTop: 8,
-            height: Platform.OS === 'ios' ? 88 : 64,
-            elevation: 8,
+            paddingBottom: Platform.OS === 'ios' ? Math.round(20 * Layout.mobileScale) : Math.round(8 * Layout.mobileScale),
+            paddingTop: Math.round(8 * Layout.mobileScale),
+            height: Platform.OS === 'ios' ? Math.round(88 * Layout.mobileScale) : Math.round(64 * Layout.mobileScale),
+            elevation: 0,
             shadowColor: '#000',
             shadowOffset: { width: 0, height: -2 },
-            shadowOpacity: 0.05,
-            shadowRadius: 8,
+            shadowOpacity: 0.04,
+            shadowRadius: 12,
+            borderTopColor: theme.colors.borderLight,
           },
           tabBarLabelStyle: {
-            fontSize: 11,
+            fontSize: Math.round(11 * Layout.mobileScale),
             fontWeight: '600',
             letterSpacing: 0.3,
           },
           tabBarItemStyle: {
-            paddingVertical: 4,
+            paddingVertical: Math.round(4 * Layout.mobileScale),
           },
         }}
         screenListeners={{
@@ -182,7 +184,7 @@ const MainTabs = () => {
             headerShown: false,
             tabBarLabel: 'Settings',
             tabBarIcon: ({ color, size }) => (
-              <Text style={{ fontSize: size, color }}>⚙️</Text>
+              <Text style={{ fontSize: Math.round(size * Layout.mobileScale), color }}>⚙️</Text>
             ),
           }}
         />

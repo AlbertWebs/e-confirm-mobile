@@ -68,15 +68,19 @@ export const UserProvider = ({ children }) => {
   // Verify OTP and create/update user
   const verifyOTP = async (phone, otp) => {
     try {
+      console.log('Verifying OTP:', { phone, otp, otpLength: otp.length });
+      
       const response = await apiRequest(API_ENDPOINTS.VERIFY_OTP, 'POST', {
         phone_number: phone,
         otp: otp,
       });
 
+      console.log('OTP verification response:', response);
+
       if (response.success && response.data) {
         const userData = {
           phone: phone,
-          ...response.data,
+          ...response.data.user || response.data,
         };
         
         // Store user data
@@ -87,7 +91,10 @@ export const UserProvider = ({ children }) => {
         return { success: true, message: response.message || 'Phone verified successfully', user: userData };
       }
 
-      return { success: false, message: response.message || 'Invalid OTP' };
+      // Return detailed error message
+      const errorMessage = response.message || response.errors || 'Invalid OTP';
+      console.error('OTP verification failed:', errorMessage);
+      return { success: false, message: typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage) };
     } catch (error) {
       console.error('Error verifying OTP:', error);
       return { success: false, message: error.message || 'Failed to verify OTP' };

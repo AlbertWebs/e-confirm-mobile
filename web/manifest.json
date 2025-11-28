@@ -10,6 +10,18 @@
   "scope": "/",
   "icons": [
     {
+      "src": "https://econfirm.co.ke/uploads/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://econfirm.co.ke/uploads/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
       "src": "/icons/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",

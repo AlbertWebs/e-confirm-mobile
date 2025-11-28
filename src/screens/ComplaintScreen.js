@@ -16,7 +16,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTheme } from '../context/ThemeContext';
-import { Typography, Spacing, Layout } from '../theme/designSystem';
+import { Typography, Spacing, Layout, BorderRadius } from '../theme/designSystem';
 import BankingCard from '../components/BankingCard';
 import BankingButton from '../components/BankingButton';
 import BankingInput from '../components/BankingInput';
@@ -145,7 +145,7 @@ const ComplaintScreen = () => {
   };
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: theme.colors.backgroundSecondary }]}>
+    <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: theme.colors.background }]}>
       <ErrorDisplay error={error} onDismiss={() => setError(null)} />
       <KeyboardAvoidingView
         style={styles.keyboardView}
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingBottom: 100,
+    paddingBottom: Spacing['3xl'],
   },
   headerCard: {
     marginBottom: Spacing.lg,
@@ -268,10 +268,10 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
     padding: Spacing.md,
     backgroundColor: '#fef3c7',
-    borderRadius: 16,
+    borderRadius: BorderRadius.lg,
   },
   headerIcon: {
-    fontSize: 32,
+    fontSize: Typography.fontSize['3xl'],
   },
   title: {
     fontSize: Typography.fontSize['2xl'],

@@ -8,6 +8,7 @@ import {
   Platform,
   FlatList,
 } from 'react-native';
+import { Typography, BorderRadius, Spacing, Layout } from '../theme/designSystem';
 
 const Dropdown = ({ options, value, onValueChange, placeholder, loading, style }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,9 +38,9 @@ const Dropdown = ({ options, value, onValueChange, placeholder, loading, style }
           disabled={loading}
           style={{
             width: '100%',
-            padding: '14px 16px',
-            fontSize: '16px',
-            borderRadius: '12px',
+            padding: `${Math.round(14 * Layout.mobileScale)}px ${Math.round(16 * Layout.mobileScale)}px`,
+            fontSize: `${Typography.fontSize.base}px`,
+            borderRadius: `${BorderRadius.md}px`,
             border: '1px solid #e5e7eb',
             backgroundColor: '#fff',
             color: '#0f172a',
@@ -47,8 +48,8 @@ const Dropdown = ({ options, value, onValueChange, placeholder, loading, style }
             appearance: 'none',
             backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%23374151\' d=\'M6 9L1 4h10z\'/%3E%3C/svg%3E")',
             backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'right 16px center',
-            paddingRight: '40px',
+            backgroundPosition: `right ${Math.round(16 * Layout.mobileScale)}px center`,
+            paddingRight: `${Math.round(40 * Layout.mobileScale)}px`,
           }}
         >
           <option value="" disabled>{placeholder || 'Select an option'}</option>
@@ -127,28 +128,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: BorderRadius.md,
     borderWidth: 1,
     borderColor: '#e5e7eb',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    minHeight: 56,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Math.round(14 * Layout.mobileScale),
+    minHeight: Math.round(56 * Layout.mobileScale),
   },
   placeholder: {
     borderColor: '#d1d5db',
   },
   dropdownText: {
     flex: 1,
-    fontSize: 16,
+    fontSize: Typography.fontSize.base,
     color: '#0f172a',
   },
   placeholderText: {
     color: '#9ca3af',
   },
   arrow: {
-    fontSize: 12,
+    fontSize: Typography.fontSize.xs,
     color: '#6b7280',
-    marginLeft: 8,
+    marginLeft: Spacing.sm,
   },
   modalOverlay: {
     flex: 1,
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: BorderRadius.md,
     width: '90%',
     maxWidth: 400,
     maxHeight: '70%',
@@ -172,8 +173,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Math.round(14 * Layout.mobileScale),
     borderBottomWidth: 1,
     borderBottomColor: '#f3f4f6',
   },
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0fdf4',
   },
   optionText: {
-    fontSize: 16,
+    fontSize: Typography.fontSize.base,
     color: '#374151',
   },
   optionTextSelected: {
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   checkmark: {
-    fontSize: 18,
+    fontSize: Typography.fontSize.lg,
     color: '#18743c',
     fontWeight: 'bold',
   },

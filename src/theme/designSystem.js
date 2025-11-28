@@ -1,38 +1,67 @@
 // Modern Banking App Design System
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+// Safely get dimensions - handle web case where Dimensions might not be ready
+let width = 375; // Default mobile width
+let height = 667; // Default mobile height
+
+try {
+  const dims = Dimensions.get('window');
+  width = dims.width || 375;
+  height = dims.height || 667;
+} catch (e) {
+  // Fallback for web or if Dimensions not available
+  if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    width = window.innerWidth || 375;
+    height = window.innerHeight || 667;
+  }
+}
+
+// Mobile scaling factor - scale down everything on mobile devices for better fit
+// Only apply to mobile (width <= 768), tablets and desktop keep original sizes
+const isMobile = width <= 768;
+const mobileScale = isMobile ? 0.88 : 1; // Scale down by 12% on mobile
+
+// Helper function to scale values for mobile
+const scale = (value) => Math.round(value * mobileScale);
 
 export const Colors = {
-  // Primary - Trustworthy Blue-Green
+  // Primary - Elegant Green (inspired by the reference app)
   primary: '#18743c',
-  primaryDark: '#145a2f',
-  primaryLight: '#10b981',
+  primaryDark: '#0d4a1f', // Darker shade for better visibility
+  primaryLight: '#22c55e',
   primarySubtle: '#f0fdf4',
+  primaryGradient: ['#0d4a1f', '#18743c'], // Darker gradient for banner
   
-  // Neutral Palette
+  // Neutral Palette - Clean White Theme
   background: '#ffffff',
-  backgroundSecondary: '#f8fafc',
-  backgroundTertiary: '#f1f5f9',
+  backgroundSecondary: '#fafafa',
+  backgroundTertiary: '#f5f5f5',
+  cardBackground: '#ffffff',
+  cardBackgroundElevated: '#ffffff',
   
-  text: '#0f172a',
-  textSecondary: '#475569',
-  textTertiary: '#94a3b8',
+  text: '#1a1a1a',
+  textSecondary: '#6b7280',
+  textTertiary: '#9ca3af',
   textInverse: '#ffffff',
   
-  border: '#e2e8f0',
-  borderLight: '#f1f5f9',
-  borderDark: '#cbd5e1',
+  border: '#e5e7eb',
+  borderLight: '#f3f4f6',
+  borderDark: '#d1d5db',
   
-  // Status Colors
+  // Status Colors - Refined
   success: '#10b981',
   successLight: '#d1fae5',
+  successSubtle: '#ecfdf5',
   warning: '#f59e0b',
   warningLight: '#fef3c7',
+  warningSubtle: '#fffbeb',
   error: '#ef4444',
   errorLight: '#fee2e2',
+  errorSubtle: '#fef2f2',
   info: '#3b82f6',
   infoLight: '#dbeafe',
+  infoSubtle: '#eff6ff',
   
   // Dark Mode
   dark: {
@@ -57,16 +86,16 @@ export const Typography = {
     bold: 'System',
   },
   
-  // Font Sizes
+  // Font Sizes (scaled for mobile)
   fontSize: {
-    xs: 12,
-    sm: 14,
-    base: 16,
-    lg: 18,
-    xl: 20,
-    '2xl': 24,
-    '3xl': 30,
-    '4xl': 36,
+    xs: scale(12),
+    sm: scale(14),
+    base: scale(16),
+    lg: scale(18),
+    xl: scale(20),
+    '2xl': scale(24),
+    '3xl': scale(30),
+    '4xl': scale(36),
   },
   
   // Line Heights
@@ -86,51 +115,68 @@ export const Typography = {
 };
 
 export const Spacing = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  '2xl': 48,
-  '3xl': 64,
+  xs: scale(4),
+  sm: scale(8),
+  md: scale(16),
+  lg: scale(24),
+  xl: scale(32),
+  '2xl': scale(48),
+  '3xl': scale(64),
 };
 
 export const BorderRadius = {
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
-  full: 9999,
+  sm: scale(6),
+  md: scale(12),
+  lg: scale(16),
+  xl: scale(20),
+  '2xl': scale(24),
+  full: 9999, // Keep full radius as is
 };
 
 export const Shadows = {
   sm: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 2,
   },
   md: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 3,
   },
   lg: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 5,
   },
   xl: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
     elevation: 8,
+  },
+  // Elegant card shadow - subtle and classy
+  card: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  // Button shadow for depth
+  button: {
+    shadowColor: '#18743c',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
 };
 
@@ -139,7 +185,12 @@ export const Layout = {
   cardPadding: Spacing.md,
   maxWidth: width > 768 ? 800 : width,
   isTablet: width > 768,
+  isMobile: isMobile,
+  mobileScale: mobileScale,
 };
+
+// Utility function to scale any value for mobile
+export const scaleValue = (value) => Math.round(value * mobileScale);
 
 export const Animation = {
   fast: 200,

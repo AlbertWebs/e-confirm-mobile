@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
-import { Typography, BorderRadius, Spacing } from '../theme/designSystem';
+import { Typography, BorderRadius, Spacing, Layout } from '../theme/designSystem';
 
 const BankingInput = ({
   label,
@@ -69,18 +69,18 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xs,
   },
   input: {
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderRadius: BorderRadius.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
     fontSize: Typography.fontSize.base,
-    minHeight: 48,
+    minHeight: Layout.mobileScale * 52,
   },
   inputError: {
     borderWidth: 1.5,
   },
   inputMultiline: {
-    minHeight: 100,
+    minHeight: Layout.mobileScale * 100,
     paddingTop: Spacing.md,
     textAlignVertical: 'top',
   },

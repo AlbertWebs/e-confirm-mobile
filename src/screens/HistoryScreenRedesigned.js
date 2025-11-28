@@ -76,10 +76,10 @@ const HistoryScreenRedesigned = () => {
   ];
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: theme.colors.backgroundSecondary }]}>
+    <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: theme.colors.background }]}>
       {/* Search Bar */}
       <View style={[styles.searchContainer, { backgroundColor: theme.colors.background }]}>
-        <View style={[styles.searchBox, { backgroundColor: theme.colors.backgroundSecondary, borderColor: theme.colors.border }]}>
+        <View style={[styles.searchBox, { backgroundColor: theme.colors.background, borderColor: theme.colors.border }]}>
           <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
             style={[styles.searchInput, { color: theme.colors.text }]}
@@ -107,7 +107,7 @@ const HistoryScreenRedesigned = () => {
               style={[
                 styles.filterChip,
                 {
-                  backgroundColor: filter === f.key ? theme.primary : theme.colors.backgroundSecondary,
+                  backgroundColor: filter === f.key ? theme.primary : theme.colors.background,
                   borderColor: filter === f.key ? theme.primary : theme.colors.border,
                 },
               ]}
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingBottom: 100,
+    paddingBottom: Spacing['3xl'],
   },
   transactionHeader: {
     flexDirection: 'row',

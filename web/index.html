@@ -47,6 +47,12 @@
             position: relative;
             background-color: #f8fafc;
         }
+        /* Hide any loading messages */
+        #root:empty::before,
+        #root::before {
+            display: none !important;
+            content: none !important;
+        }
         /* Ensure React Native Web components are visible */
         div[class*="View"] {
             display: flex !important;
@@ -104,18 +110,34 @@
 </head>
 <body>
     <div id="root"></div>
+    <!-- Bundle script will be injected here by webpack -->
     <script src="/install-prompt.js"></script>
     <script>
-        // Register Service Worker
+        // Temporarily disable service worker to prevent reload issues
+        // Uncomment below to re-enable service worker after fixing reload issue
+        /*
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then((registration) => {
-                        console.log('Service Worker registered:', registration);
-                    })
-                    .catch((error) => {
-                        console.log('Service Worker registration failed:', error);
-                    });
+                setTimeout(() => {
+                    navigator.serviceWorker.register('/service-worker.js')
+                        .then((registration) => {
+                            console.log('Service Worker registered:', registration);
+                        })
+                        .catch((error) => {
+                            console.log('Service Worker registration failed:', error);
+                        });
+                }, 2000);
+            });
+        }
+        */
+        
+        // Unregister any existing service workers
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                    console.log('Service Worker unregistered');
+                }
             });
         }
     </script>

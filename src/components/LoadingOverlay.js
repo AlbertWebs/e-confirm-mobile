@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet, Animated, Dimensions, Platform } from 'react-native';
+import { Typography, BorderRadius, Spacing, Layout } from '../theme/designSystem';
 
 const { width } = Dimensions.get('window');
 
@@ -57,10 +58,10 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 24,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.lg,
     alignItems: 'center',
-    minWidth: width > 768 ? 200 : 150,
+    minWidth: width > 768 ? 200 : Math.round(150 * Layout.mobileScale),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -68,8 +69,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   message: {
-    marginTop: 12,
-    fontSize: 14,
+    marginTop: Spacing.md,
+    fontSize: Typography.fontSize.sm,
     color: '#374151',
     fontWeight: '500',
   },

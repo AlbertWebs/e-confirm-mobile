@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../context/ThemeContext';
-import { Typography, BorderRadius, Spacing } from '../theme/designSystem';
+import { Typography, BorderRadius, Spacing, Layout, Shadows } from '../theme/designSystem';
 
 const BankingButton = ({ 
   title, 
@@ -42,14 +42,14 @@ const BankingButton = ({
       <TouchableOpacity
         onPress={onPress}
         disabled={disabled || loading}
-        activeOpacity={0.8}
-        style={[buttonStyle, { borderWidth: 1, borderColor: 'transparent', overflow: 'hidden' }]}
+        activeOpacity={0.85}
+        style={[buttonStyle, { borderWidth: 0, borderColor: 'transparent', overflow: 'hidden' }, !disabled && Shadows.button]}
       >
         <LinearGradient
-          colors={[theme.primary, theme.primaryDark]}
+          colors={theme.primaryGradient || [theme.primary, theme.primaryLight]}
           style={styles.gradient}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
+          end={{ x: 1, y: 1 }}
         />
         <View style={styles.buttonContent}>
           {loading ? (
@@ -87,26 +87,29 @@ const BankingButton = ({
   );
 };
 
+// Scale helper for component-specific values
+const scale = (value) => Math.round(value * Layout.mobileScale);
+
 const styles = StyleSheet.create({
   button: {
     paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
+    paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 44,
+    minHeight: scale(48),
     // Ensure consistent sizing regardless of border
     boxSizing: 'border-box',
   },
   buttonSm: {
-    paddingVertical: 6,
+    paddingVertical: scale(6),
     paddingHorizontal: Spacing.sm,
-    minHeight: 36,
+    minHeight: scale(36),
   },
   buttonLg: {
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
-    minHeight: 50,
+    minHeight: scale(50),
   },
   fullWidth: {
     width: '100%',

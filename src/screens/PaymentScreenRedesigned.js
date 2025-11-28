@@ -79,7 +79,7 @@ const PaymentScreenRedesigned = () => {
 
   if (!transactionData) {
     return (
-      <View style={[styles.container, { backgroundColor: theme.colors.backgroundSecondary }]}>
+      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
         <Text style={[styles.loadingText, { color: theme.colors.text }]}>Loading...</Text>
       </View>
     );
@@ -91,7 +91,7 @@ const PaymentScreenRedesigned = () => {
   const totalAmount = parseFloat(transactionAmount) + parseFloat(transactionFee);
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: theme.colors.backgroundSecondary }]}>
+    <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: theme.colors.background }]}>
       <ErrorDisplay error={error} onDismiss={() => setError(null)} />
       <ScrollView
         style={styles.scrollView}
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingBottom: 100,
+    paddingBottom: Spacing['3xl'],
   },
   summaryCard: {
     marginBottom: Spacing.lg,
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   methodIcon: {
-    fontSize: 24,
+    fontSize: Typography.fontSize['2xl'],
     marginRight: Spacing.sm,
   },
   methodName: {
@@ -266,9 +266,9 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   stepNumber: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: Math.round(24 * Layout.mobileScale),
+    height: Math.round(24 * Layout.mobileScale),
+    borderRadius: Math.round(12 * Layout.mobileScale),
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: Spacing.sm,
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   actionButtonWrapper: {
     flex: 1,
     minWidth: 0,
-    minHeight: 44,
+    minHeight: Math.round(44 * Layout.mobileScale),
   },
   loadingText: {
     fontSize: Typography.fontSize.base,

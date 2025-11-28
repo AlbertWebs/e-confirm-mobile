@@ -1,6 +1,7 @@
 // API Configuration
 // e-confirm API endpoint
-export const API_BASE_URL = 'https://econfirm.co.ke/api';
+// Use localhost:8000 for local development (Laravel dev server)
+export const API_BASE_URL = 'http://localhost:8000/api';
 
 export const API_ENDPOINTS = {
   TRANSACTION_TYPES: '/mobile/transaction-types',
@@ -10,9 +11,13 @@ export const API_ENDPOINTS = {
   GET_TRANSACTION: '/mobile/transaction',
   SEARCH_TRANSACTION: '/mobile/transaction/search',
   SUBMIT_COMPLAINT: '/mobile/complaint',
+  // Payment release endpoints
+  RELEASE_PAYMENT: '/mobile/transaction/release',
+  REQUEST_RELEASE: '/mobile/transaction/request-release',
   // User authentication endpoints
-  SEND_OTP: '/mobile/auth/send-otp',
-  VERIFY_OTP: '/mobile/auth/verify-otp',
+  // Try alternative paths if the default doesn't work
+  SEND_OTP: '/auth/send-otp', // Changed from '/mobile/auth/send-otp'
+  VERIFY_OTP: '/auth/verify-otp', // Changed from '/mobile/auth/verify-otp'
   UPDATE_PROFILE: '/mobile/user/update-profile',
 };
 
@@ -48,11 +53,26 @@ export const apiRequest = async (endpoint, method = 'GET', data = null) => {
 
     if (!response.ok) {
       console.error('API Error Response:', result);
-      // Return error response instead of throwing for better UX
+      console.error(`Failed endpoint: ${method} ${url}`);
+      console.error(`Response status: ${response.status}`);
+      console.error(`Response body:`, result);
+      
+      // Check for 404 (route not found) and provide helpful error message
+      if (response.status === 404) {
+        return { 
+          success: false, 
+          message: `API endpoint not found: ${endpoint}. Please check the API configuration.`,
+          data: null,
+          errors: result.errors || null
+        };
+      }
+      
+      // Return error response with all details
       return { 
         success: false, 
         message: result.message || `Request failed with status ${response.status}`,
-        data: null 
+        data: null,
+        errors: result.errors || null
       };
     }
 

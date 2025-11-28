@@ -1,8 +1,8 @@
 // Service Worker for eConfirm Escrow PWA
 // Provides offline functionality and caching
 
-const CACHE_NAME = 'econfirm-escrow-v1';
-const RUNTIME_CACHE = 'econfirm-runtime-v1';
+const CACHE_NAME = 'econfirm-escrow-v2';
+const RUNTIME_CACHE = 'econfirm-runtime-v2';
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [

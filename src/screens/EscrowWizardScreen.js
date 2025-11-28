@@ -83,6 +83,12 @@ const EscrowWizardScreen = () => {
       if (!formData.transaction_type) {
         newErrors.transaction_type = 'Transaction type required';
       }
+      
+      // Validate sender mobile (required for API)
+      const senderMobile = formData.sender_phone || phoneNumber;
+      if (!senderMobile || !senderMobile.match(/^\+?254[0-9]{9}$/)) {
+        newErrors.sender_phone = 'Your phone number is required (format: +254712345678)';
+      }
     } else if (step === 1) {
       if (formData.recipient_type === 'phone') {
         if (!formData.recipient || !formData.recipient.match(/^\+?254[0-9]{9}$/)) {
@@ -187,6 +193,23 @@ const EscrowWizardScreen = () => {
   };
 
   const handleSubmit = async () => {
+    // Validate all fields including sender mobile
+    const validationErrors = {};
+    const senderMobile = formData.sender_phone || phoneNumber;
+    
+    if (!senderMobile || !senderMobile.match(/^\+?254[0-9]{9}$/)) {
+      validationErrors.sender_phone = 'Your phone number is required (format: +254712345678)';
+      setErrors(validationErrors);
+      setSubmitError('Please enter your phone number before submitting.');
+      return;
+    }
+    
+    // Validate other fields
+    if (!validateStep(4)) {
+      setSubmitError('Please fix all errors before submitting.');
+      return;
+    }
+    
     // Calculate transaction fee (1% of amount)
     const amount = parseFloat(formData.amount || 0);
     const transactionFee = Math.ceil(amount * 0.01); // 1% fee, rounded up
@@ -205,8 +228,10 @@ const EscrowWizardScreen = () => {
         transaction_fee: transactionFee,
         transaction_type: formData.transaction_type,
         conditions: formData.conditions || null,
-        sender_phone: formData.sender_phone || phoneNumber || null, // Include sender phone for guest users
+        sender_mobile: senderMobile, // API expects sender_mobile, not sender_phone
       };
+      
+      console.log('Submitting transaction with data:', JSON.stringify(apiData, null, 2)); // Debug log
       
       // Create transaction via API
       const response = await apiRequest(
@@ -258,16 +283,25 @@ const EscrowWizardScreen = () => {
             {isGuest && (
               <View style={styles.guestPhoneSection}>
                 <BankingInput
-                  label="Your Phone Number (Optional)"
+                  label="Your Phone Number *"
                   value={formData.sender_phone}
                   onChangeText={(value) => {
                     setFormData({ ...formData, sender_phone: value });
                     if (value && value.match(/^\+?254[0-9]{9}$/)) {
                       setGuestPhone(value);
                     }
+                    // Clear error if valid
+                    if (errors.sender_phone) {
+                      setErrors(prev => {
+                        const newErrors = { ...prev };
+                        delete newErrors.sender_phone;
+                        return newErrors;
+                      });
+                    }
                   }}
                   placeholder="+254712345678"
                   keyboardType="phone-pad"
+                  error={errors.sender_phone}
                   helperText="We'll use this to send you transaction updates"
                 />
                 {formData.sender_phone && formData.sender_phone.match(/^\+?254[0-9]{9}$/) && (
@@ -590,11 +624,11 @@ const EscrowWizardScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: theme.colors.backgroundSecondary }]}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       {/* Modern Progress Indicator */}
-      <View style={[styles.progressContainer, { backgroundColor: theme.colors.background }]}>
+      <View style={[styles.progressContainer, { backgroundColor: theme.colors.background, borderBottomWidth: 1, borderBottomColor: theme.colors.borderLight }]}>
         <View style={styles.stepDotsContainer}>
           {stepConfig.map((step, index) => {
             const isActive = currentStep === step.number;
@@ -613,7 +647,7 @@ const EscrowWizardScreen = () => {
                           ? theme.primary
                           : theme.colors.border,
                         borderColor: isActive ? theme.primary : 'transparent',
-                        transform: [{ scale: isActive ? 1.2 : 1 }],
+                        transform: [{ scale: isActive ? 1.1 : 1 }],
                       },
                     ]}
                   >
@@ -712,9 +746,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   progressContainer: {
-    padding: Spacing.lg,
-    paddingTop: Spacing.xl,
-    paddingBottom: Spacing.md,
+    padding: Spacing.sm,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.xs,
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',
   },
@@ -722,71 +756,72 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: Spacing.lg,
-    paddingHorizontal: Spacing.md,
+    marginBottom: Spacing.xs,
+    paddingHorizontal: Spacing.xs,
   },
   stepDotWrapper: {
     alignItems: 'center',
     position: 'relative',
   },
   stepDot: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    borderWidth: 3,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 2.5,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#e2e8f0',
+    backgroundColor: '#f3f4f6',
   },
   stepIcon: {
-    fontSize: 20,
+    fontSize: 14,
   },
   stepCheckmark: {
-    fontSize: 20,
+    fontSize: 16,
     color: '#fff',
     fontWeight: 'bold',
   },
   stepLabel: {
-    fontSize: Typography.fontSize.xs,
+    fontSize: Typography.fontSize.xs * 0.85,
     fontWeight: Typography.fontWeight.semibold,
-    marginTop: Spacing.xs,
+    marginTop: Math.round(2 * Layout.mobileScale),
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
   stepConnector: {
     flex: 1,
-    height: 3,
-    marginHorizontal: Spacing.xs,
-    borderRadius: 2,
+    height: 2,
+    marginHorizontal: Spacing.xs / 2,
+    borderRadius: 1,
     backgroundColor: '#e2e8f0',
   },
   progressBarContainer: {
-    marginTop: Spacing.md,
+    marginTop: Spacing.xs,
   },
   progressBar: {
-    height: 6,
-    backgroundColor: '#e2e8f0',
-    borderRadius: 3,
-    marginBottom: Spacing.sm,
+    height: 4,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 2,
+    marginBottom: Spacing.xs,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    borderRadius: 3,
+    borderRadius: 1.5,
   },
   stepIndicator: {
-    fontSize: Typography.fontSize.xs,
+    fontSize: Typography.fontSize.xs * 0.85,
     fontWeight: Typography.fontWeight.semibold,
     textAlign: 'center',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
     textTransform: 'uppercase',
+    marginTop: Math.round(2 * Layout.mobileScale),
   },
   scrollView: {
     flex: 1,
   },
   content: {
     padding: Layout.screenPadding,
-    paddingBottom: 100,
+    paddingBottom: Spacing['3xl'],
   },
   stepTitle: {
     fontSize: Typography.fontSize['3xl'],
@@ -875,7 +910,7 @@ const styles = StyleSheet.create({
   footerButton: {
     flex: 1,
     minWidth: 0, // Allow flex to work properly
-    minHeight: 44, // Ensure consistent height
+    minHeight: Math.round(44 * Layout.mobileScale), // Ensure consistent height
   },
   footerButtonFull: {
     flex: 1,
@@ -894,7 +929,7 @@ const styles = StyleSheet.create({
     transition: 'all 0.2s ease',
   },
   paymentMethodIcon: {
-    fontSize: 32,
+    fontSize: Typography.fontSize['3xl'],
     marginRight: Spacing.md,
   },
   paymentMethodInfo: {
@@ -909,7 +944,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.fontSize.sm,
   },
   checkmark: {
-    fontSize: 24,
+    fontSize: Typography.fontSize['2xl'],
     fontWeight: Typography.fontWeight.bold,
   },
   paymentInput: {
@@ -937,7 +972,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
-    minHeight: 48,
+    minHeight: Math.round(48 * Layout.mobileScale),
     justifyContent: 'center',
   },
   loadingText: {

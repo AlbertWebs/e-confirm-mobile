@@ -22,6 +22,7 @@ const DashboardScreen = () => {
   const slideAnim = React.useRef(new Animated.Value(20)).current;
   const scaleAnim = React.useRef(new Animated.Value(0.95)).current;
   const [refreshing, setRefreshing] = useState(false);
+  const [balanceVisible, setBalanceVisible] = useState(true);
   
   // Mock data - replace with actual API calls
   const [balance] = useState(125000);
@@ -79,7 +80,7 @@ const DashboardScreen = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.backgroundSecondary, minHeight: '100vh' }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background, minHeight: '100vh' }}>
       {/* Header */}
       <Animated.View
         style={[
@@ -102,10 +103,15 @@ const DashboardScreen = () => {
 
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ padding: Layout.screenPadding, paddingTop: 0, paddingBottom: 100 }}
+        contentContainerStyle={{ padding: Layout.screenPadding, paddingTop: 0, paddingBottom: Spacing['3xl'] }}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            tintColor={theme.primary}
+            colors={[theme.primary]}
+          />
         }
       >
         {/* Enhanced Balance Card with Gradient */}
@@ -117,7 +123,7 @@ const DashboardScreen = () => {
         >
           <View style={styles.balanceCardContainer}>
             <LinearGradient
-              colors={[theme.primary, theme.primaryDark]}
+              colors={theme.primaryGradient || [theme.primary, theme.primaryLight]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.balanceCardGradient}
@@ -127,25 +133,36 @@ const DashboardScreen = () => {
                   <Text style={styles.balanceLabel}>
                     Total Balance
                   </Text>
-                  <View style={styles.balanceBadge}>
-                    <Text style={styles.balanceBadgeText}>Active</Text>
+                  <View style={styles.balanceHeaderRight}>
+                    <View style={styles.balanceBadge}>
+                      <Text style={styles.balanceBadgeText}>Active</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => setBalanceVisible(!balanceVisible)}
+                      style={styles.eyeButton}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.eyeIcon}>
+                        {balanceVisible ? '👁️' : '👁️‍🗨️'}
+                      </Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
                 <Text style={styles.balanceAmount}>
-                  KES {balance.toLocaleString()}
+                  {balanceVisible ? `KES ${balance.toLocaleString()}` : 'KES ••••••'}
                 </Text>
                 <View style={styles.balanceFooter}>
                   <View style={styles.balanceStat}>
                     <Text style={styles.balanceStatLabel}>In Escrow</Text>
                     <Text style={styles.balanceStatValue}>
-                      KES {pendingAmount.toLocaleString()}
+                      {balanceVisible ? `KES ${pendingAmount.toLocaleString()}` : 'KES ••••••'}
                     </Text>
                   </View>
                   <View style={styles.balanceDivider} />
                   <View style={styles.balanceStat}>
                     <Text style={styles.balanceStatLabel}>Available</Text>
                     <Text style={styles.balanceStatValue}>
-                      KES {(balance - pendingAmount).toLocaleString()}
+                      {balanceVisible ? `KES ${(balance - pendingAmount).toLocaleString()}` : 'KES ••••••'}
                     </Text>
                   </View>
                 </View>
@@ -360,6 +377,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.md,
   },
+  balanceHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  eyeButton: {
+    padding: Spacing.xs,
+    borderRadius: BorderRadius.sm,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  eyeIcon: {
+    fontSize: 18,
+  },
   balanceLabel: {
     fontSize: Typography.fontSize.sm,
     fontWeight: Typography.fontWeight.medium,
@@ -442,9 +472,8 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
     padding: Spacing.lg,
     alignItems: 'center',
-    ...Shadows.md,
-    borderWidth: 1,
-    borderColor: 'transparent',
+    ...Shadows.card,
+    borderWidth: 0,
   },
   actionIconGradient: {
     width: 64,
@@ -473,7 +502,8 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    padding: Spacing.md,
+    padding: Spacing.lg,
+    marginBottom: 0,
   },
   statContent: {
     flexDirection: 'row',
@@ -488,7 +518,7 @@ const styles = StyleSheet.create({
     marginRight: Spacing.md,
   },
   statIcon: {
-    fontSize: 24,
+    fontSize: Typography.fontSize['2xl'],
   },
   statInfo: {
     flex: 1,

@@ -20,6 +20,7 @@ import { useApp } from '../context/AppContext';
 import Dropdown from '../components/Dropdown';
 import { ShieldIcon, DocumentIcon } from '../components/SvgIcons';
 import ErrorDisplay from '../components/ErrorDisplay';
+import { Typography, Spacing, BorderRadius, Layout } from '../theme/designSystem';
 
 const { width } = Dimensions.get('window');
 
@@ -395,19 +396,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerIconContainer: {
-    marginBottom: 12,
-    padding: 12,
+    marginBottom: Spacing.md,
+    padding: Spacing.md,
     backgroundColor: '#f0fdf4',
-    borderRadius: 16,
+    borderRadius: BorderRadius.lg,
   },
   title: {
-    fontSize: width > 768 ? 32 : 24,
+    fontSize: width > 768 ? Typography.fontSize['3xl'] : Typography.fontSize['2xl'],
     fontWeight: 'bold',
     color: '#0f172a',
-    marginBottom: 5,
+    marginBottom: Spacing.xs,
   },
   subtitle: {
-    fontSize: width > 768 ? 16 : 14,
+    fontSize: width > 768 ? Typography.fontSize.base : Typography.fontSize.sm,
     color: '#64748b',
   },
   form: {
@@ -417,50 +418,50 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   section: {
-    marginBottom: 20,
+    marginBottom: Spacing.lg,
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: Spacing.lg,
   },
   label: {
-    fontSize: 14,
+    fontSize: Typography.fontSize.sm,
     fontWeight: '600',
     color: '#374151',
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
   },
   dropdown: {
-    marginTop: 8,
+    marginTop: Spacing.sm,
   },
   amountContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: BorderRadius.md,
     borderWidth: 1,
     borderColor: '#e5e7eb',
-    paddingHorizontal: 16,
-    height: 56,
+    paddingHorizontal: Spacing.md,
+    height: Math.round(56 * (width > 768 ? 1 : Layout.mobileScale)),
   },
   currency: {
-    fontSize: 16,
+    fontSize: Typography.fontSize.base,
     fontWeight: '600',
     color: '#18743c',
-    marginRight: 8,
+    marginRight: Spacing.sm,
   },
   amountInput: {
     flex: 1,
-    fontSize: 18,
+    fontSize: Typography.fontSize.lg,
     fontWeight: '600',
     color: '#0f172a',
   },
   input: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: BorderRadius.md,
     borderWidth: 1,
     borderColor: '#e5e7eb',
-    paddingHorizontal: width > 768 ? 20 : 16,
-    paddingVertical: width > 768 ? 16 : 14,
-    fontSize: width > 768 ? 18 : 16,
+    paddingHorizontal: width > 768 ? Spacing.lg : Spacing.md,
+    paddingVertical: width > 768 ? Spacing.md : Math.round(14 * Layout.mobileScale),
+    fontSize: width > 768 ? Typography.fontSize.lg : Typography.fontSize.base,
     color: '#0f172a',
   },
   inputError: {
@@ -470,25 +471,25 @@ const styles = StyleSheet.create({
   },
   fieldError: {
     color: '#ef4444',
-    fontSize: 12,
-    marginTop: 4,
-    marginLeft: 4,
+    fontSize: Typography.fontSize.xs,
+    marginTop: Spacing.xs,
+    marginLeft: Spacing.xs,
     fontWeight: '500',
   },
   textArea: {
-    height: 100,
-    paddingTop: 14,
+    height: Math.round(100 * Layout.mobileScale),
+    paddingTop: Math.round(14 * Layout.mobileScale),
   },
   radioGroup: {
     flexDirection: 'row',
-    gap: 12,
+    gap: Spacing.md,
   },
   radioOption: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: BorderRadius.md,
     borderWidth: 1,
     borderColor: '#e5e7eb',
     padding: width > 768 ? 16 : 14,
@@ -499,20 +500,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0fdf4',
   },
   radioCircle: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: Math.round(20 * Layout.mobileScale),
+    height: Math.round(20 * Layout.mobileScale),
+    borderRadius: Math.round(10 * Layout.mobileScale),
     borderWidth: 2,
     borderColor: '#d1d5db',
-    marginRight: 12,
+    marginRight: Spacing.md,
   },
   radioCircleActive: {
     borderColor: '#18743c',
     backgroundColor: '#18743c',
   },
   submitButton: {
-    marginTop: width > 768 ? 20 : 10,
-    borderRadius: 12,
+    marginTop: width > 768 ? Spacing.lg : Spacing.md,
+    borderRadius: BorderRadius.md,
     overflow: 'hidden',
     elevation: 3,
     shadowColor: '#18743c',
@@ -521,13 +522,13 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
   },
   submitGradient: {
-    paddingVertical: width > 768 ? 18 : 16,
+    paddingVertical: width > 768 ? Spacing.md : Math.round(16 * Layout.mobileScale),
     alignItems: 'center',
     justifyContent: 'center',
   },
   submitButtonText: {
     color: '#fff',
-    fontSize: width > 768 ? 18 : 16,
+    fontSize: width > 768 ? Typography.fontSize.lg : Typography.fontSize.base,
     fontWeight: '700',
   },
 });

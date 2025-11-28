@@ -15,15 +15,17 @@ import { useUser } from '../context/UserContext';
 import { Typography, Spacing, BorderRadius, Layout } from '../theme/designSystem';
 import BankingCard from '../components/BankingCard';
 import BankingButton from '../components/BankingButton';
+import LoginModal from '../components/LoginModal';
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
   const theme = useTheme();
-  const { user, isGuest, phoneNumber, logout } = useUser();
+  const { user, isGuest, phoneNumber, logout, loadUserData } = useUser();
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const { isDarkMode, toggleTheme } = useTheme();
   const [biometricEnabled, setBiometricEnabled] = React.useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
+  const [showLoginModal, setShowLoginModal] = React.useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -32,9 +34,20 @@ const SettingsScreen = () => {
         duration: 300,
         useNativeDriver: true,
       }).start();
+      
+      // Check if user is guest and show login modal
+      if (isGuest) {
+        setShowLoginModal(true);
+      }
+      
       return () => fadeAnim.setValue(0);
-    }, [fadeAnim])
+    }, [fadeAnim, isGuest])
   );
+
+  const handleLoginSuccess = async (userData) => {
+    await loadUserData();
+    setShowLoginModal(false);
+  };
 
   const SettingItem = ({ label, value, onPress, rightComponent, showArrow = true }) => (
     <TouchableOpacity
@@ -60,7 +73,17 @@ const SettingsScreen = () => {
   );
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: theme.colors.backgroundSecondary }]}>
+    <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: theme.colors.background }]}>
+      <LoginModal
+        visible={showLoginModal}
+        onClose={() => {
+          // Don't allow closing if user is guest - they must login
+          if (!isGuest) {
+            setShowLoginModal(false);
+          }
+        }}
+        onSuccess={handleLoginSuccess}
+      />
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.content, { padding: Layout.screenPadding }]}
@@ -254,7 +277,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingBottom: 100,
+    paddingBottom: Spacing['3xl'],
   },
   section: {
     marginBottom: Spacing.lg,
@@ -312,7 +335,7 @@ const styles = StyleSheet.create({
     fontSize: Typography.fontSize.sm,
   },
   arrow: {
-    fontSize: 24,
+    fontSize: Typography.fontSize['2xl'],
     marginLeft: Spacing.xs,
   },
   appInfo: {

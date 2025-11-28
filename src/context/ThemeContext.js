@@ -55,10 +55,19 @@ export const ThemeProvider = ({ children }) => {
     primaryDark: Colors.primaryDark,
     primaryLight: Colors.primaryLight,
     primarySubtle: Colors.primarySubtle,
+    primaryGradient: Colors.primaryGradient,
     success: Colors.success,
+    successLight: Colors.successLight,
+    successSubtle: Colors.successSubtle,
     warning: Colors.warning,
+    warningLight: Colors.warningLight,
+    warningSubtle: Colors.warningSubtle,
     error: Colors.error,
+    errorLight: Colors.errorLight,
+    errorSubtle: Colors.errorSubtle,
     info: Colors.info,
+    infoLight: Colors.infoLight,
+    infoSubtle: Colors.infoSubtle,
   };
 
   // Don't block rendering while loading theme - use default light mode

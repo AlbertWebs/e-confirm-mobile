@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
-import { Typography, BorderRadius, Spacing } from '../theme/designSystem';
+import { Typography, BorderRadius, Spacing, Layout } from '../theme/designSystem';
 
 const StatusBadge = ({ status, size = 'md' }) => {
   const theme = useTheme();
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   sm: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
+    paddingHorizontal: Math.round(6 * Layout.mobileScale),
+    paddingVertical: Math.round(2 * Layout.mobileScale),
   },
   md: {
     paddingHorizontal: Spacing.sm,

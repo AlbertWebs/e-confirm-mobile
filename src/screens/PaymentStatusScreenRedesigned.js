@@ -111,7 +111,7 @@ const PaymentStatusScreenRedesigned = () => {
   const config = getStatusConfig();
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.backgroundSecondary }]}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.content, { padding: Layout.screenPadding }]}
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingBottom: 100,
+    paddingBottom: Spacing['3xl'],
     alignItems: 'center',
   },
   statusContainer: {
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   statusIconContainer: {
     width: 120,
     height: 120,
-    borderRadius: 60,
+    borderRadius: BorderRadius.xl * 3,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.lg,
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   actionButtonWrapper: {
     flex: 1,
     minWidth: 0,
-    minHeight: 44,
+    minHeight: Math.round(44 * Layout.mobileScale),
   },
   infoCard: {
     marginTop: Spacing.xl,

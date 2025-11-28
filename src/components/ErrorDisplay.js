@@ -7,6 +7,7 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
+import { Typography, BorderRadius, Spacing, Layout } from '../theme/designSystem';
 
 const { width } = Dimensions.get('window');
 
@@ -97,15 +98,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1000,
-    paddingHorizontal: width > 768 ? 24 : 16,
-    paddingTop: 8,
+    paddingHorizontal: Layout.screenPadding,
+    paddingTop: Spacing.sm,
   },
   errorBox: {
     backgroundColor: '#fee2e2',
     borderLeftWidth: 4,
     borderLeftColor: '#ef4444',
-    borderRadius: 8,
-    padding: 16,
+    borderRadius: BorderRadius.sm,
+    padding: Spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -121,29 +122,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   errorIcon: {
-    fontSize: 24,
-    marginRight: 12,
+    fontSize: Typography.fontSize['2xl'],
+    marginRight: Spacing.md,
   },
   errorTextContainer: {
     flex: 1,
   },
   errorTitle: {
-    fontSize: 14,
+    fontSize: Typography.fontSize.sm,
     fontWeight: '700',
     color: '#991b1b',
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
   },
   errorMessage: {
-    fontSize: 13,
+    fontSize: Typography.fontSize.xs,
     color: '#7f1d1d',
-    lineHeight: 18,
+    lineHeight: Typography.fontSize.sm * Typography.lineHeight.normal,
   },
   dismissButton: {
-    padding: 4,
-    marginLeft: 12,
+    padding: Spacing.xs,
+    marginLeft: Spacing.md,
   },
   dismissButtonText: {
-    fontSize: 18,
+    fontSize: Typography.fontSize.lg,
     color: '#991b1b',
     fontWeight: 'bold',
   },

@@ -154,7 +154,7 @@ const PhoneVerificationScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: theme.colors.backgroundSecondary }]}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ErrorDisplay error={error} onDismiss={() => setError(null)} />
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   },
   otpInput: {
     flex: 1,
-    height: 56,
+    height: Math.round(56 * Layout.mobileScale),
     borderWidth: 2,
     borderRadius: BorderRadius.md,
     textAlign: 'center',

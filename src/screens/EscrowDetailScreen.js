@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Animated,
+  Alert,
 } from 'react-native';
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { useTheme } from '../context/ThemeContext';
@@ -15,16 +16,20 @@ import BankingCard from '../components/BankingCard';
 import BankingButton from '../components/BankingButton';
 import StatusBadge from '../components/StatusBadge';
 import { apiRequest, API_ENDPOINTS } from '../config/api';
+import { useUser } from '../context/UserContext';
 
 const EscrowDetailScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const theme = useTheme();
   const { transactionId } = route.params;
+  const { phoneNumber, user } = useUser();
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   
   const [loading, setLoading] = useState(true);
   const [transaction, setTransaction] = useState(null);
+  const [releasing, setReleasing] = useState(false);
+  const [requestingRelease, setRequestingRelease] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -53,6 +58,73 @@ const EscrowDetailScreen = () => {
       console.error('Error loading transaction:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Determine if current user is buyer or seller
+  const getUserRole = () => {
+    if (!transaction || !phoneNumber) return null;
+    
+    const userPhone = phoneNumber.replace(/\s+/g, '').replace(/^\+/, '');
+    const senderPhone = (transaction.sender_mobile || '').replace(/\s+/g, '').replace(/^\+/, '');
+    const receiverPhone = (transaction.receiver_mobile || transaction.recipient_mobile || '').replace(/\s+/g, '').replace(/^\+/, '');
+    
+    if (userPhone === senderPhone) {
+      return 'buyer'; // User sent the payment
+    } else if (userPhone === receiverPhone) {
+      return 'seller'; // User is receiving the payment
+    }
+    
+    return null;
+  };
+
+  const handleReleasePayment = async () => {
+    if (!transaction) return;
+    
+    try {
+      setReleasing(true);
+      const response = await apiRequest(
+        `${API_ENDPOINTS.RELEASE_PAYMENT}/${transactionId}`,
+        'POST',
+        { transaction_id: transactionId }
+      );
+
+      if (response.success) {
+        // Reload transaction to get updated status
+        await loadTransaction();
+        Alert.alert('Success', 'Payment released successfully!');
+      } else {
+        Alert.alert('Error', response.message || 'Failed to release payment');
+      }
+    } catch (error) {
+      console.error('Error releasing payment:', error);
+      Alert.alert('Error', 'Failed to release payment. Please try again.');
+    } finally {
+      setReleasing(false);
+    }
+  };
+
+  const handleRequestRelease = async () => {
+    if (!transaction) return;
+    
+    try {
+      setRequestingRelease(true);
+      const response = await apiRequest(
+        `${API_ENDPOINTS.REQUEST_RELEASE}/${transactionId}`,
+        'POST',
+        { transaction_id: transactionId }
+      );
+
+      if (response.success) {
+        Alert.alert('Success', 'Release request sent to buyer!');
+      } else {
+        Alert.alert('Error', response.message || 'Failed to send release request');
+      }
+    } catch (error) {
+      console.error('Error requesting release:', error);
+      Alert.alert('Error', 'Failed to send release request. Please try again.');
+    } finally {
+      setRequestingRelease(false);
     }
   };
 
@@ -96,7 +168,7 @@ const EscrowDetailScreen = () => {
 
   if (loading) {
     return (
-      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.backgroundSecondary }]}>
+      <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" color={theme.primary} />
       </View>
     );
@@ -104,7 +176,7 @@ const EscrowDetailScreen = () => {
 
   if (!transaction) {
     return (
-      <View style={[styles.container, { backgroundColor: theme.colors.backgroundSecondary }]}>
+      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
         <Text style={[styles.errorText, { color: theme.colors.text }]}>
           Transaction not found
         </Text>
@@ -116,7 +188,7 @@ const EscrowDetailScreen = () => {
   const currentStep = timelineSteps.findIndex(step => !step.completed);
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: theme.colors.backgroundSecondary }]}>
+    <Animated.View style={[styles.container, { opacity: fadeAnim, backgroundColor: theme.colors.background }]}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[styles.content, { padding: Layout.screenPadding }]}
@@ -265,15 +337,57 @@ const EscrowDetailScreen = () => {
         </BankingCard>
 
         {/* Actions */}
-        {transaction.status?.toLowerCase().includes('pending') && (
-          <BankingButton
-            title="Continue Payment"
-            onPress={() => navigation.navigate('Payment', { transactionData: transaction })}
-            fullWidth
-            size="lg"
-            style={styles.actionButton}
-          />
-        )}
+        {(() => {
+          const userRole = getUserRole();
+          const status = transaction.status?.toLowerCase() || '';
+          const isFunded = status.includes('funded') || status.includes('paid');
+          const isPending = status.includes('pending') || status.includes('waiting');
+          const isCompleted = status.includes('completed') || status.includes('released');
+
+          // Show payment button if transaction is pending and user is buyer
+          if (isPending && userRole === 'buyer' && !transaction.checkout_request_id) {
+            return (
+              <BankingButton
+                title="Continue Payment"
+                onPress={() => navigation.navigate('Payment', { transactionData: transaction })}
+                fullWidth
+                size="lg"
+                style={styles.actionButton}
+              />
+            );
+          }
+
+          // Show release payment button if funds are in escrow and user is buyer
+          if (isFunded && !isCompleted && userRole === 'buyer') {
+            return (
+              <BankingButton
+                title="Release Payment"
+                onPress={handleReleasePayment}
+                loading={releasing}
+                fullWidth
+                size="lg"
+                style={styles.actionButton}
+              />
+            );
+          }
+
+          // Show request release button if funds are in escrow and user is seller
+          if (isFunded && !isCompleted && userRole === 'seller') {
+            return (
+              <BankingButton
+                title="Request Release"
+                onPress={handleRequestRelease}
+                loading={requestingRelease}
+                variant="outline"
+                fullWidth
+                size="lg"
+                style={styles.actionButton}
+              />
+            );
+          }
+
+          return null;
+        })()}
       </ScrollView>
     </Animated.View>
   );
@@ -303,7 +417,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingBottom: 100,
+    paddingBottom: Spacing['3xl'],
   },
   headerCard: {
     marginBottom: Spacing.lg,
@@ -378,7 +492,7 @@ const styles = StyleSheet.create({
   },
   timelineContent: {
     flex: 1,
-    paddingTop: 4,
+    paddingTop: Spacing.xs,
   },
   timelineTitle: {
     fontSize: Typography.fontSize.base,
